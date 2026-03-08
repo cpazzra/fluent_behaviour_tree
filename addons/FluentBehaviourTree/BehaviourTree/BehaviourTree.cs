@@ -64,7 +64,7 @@ public partial class BehaviourTree : Node {
 
     public override void _Notification(int what) {
         if (what == NotificationPredelete) {
-            BehaviourTreeDebugRegistrar.UnregisterTree(Owner, this);
+            BehaviourTreeDebugRegistrar.UnregisterTree(treeOwner, this);
         }
     }
 
