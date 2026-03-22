@@ -66,7 +66,7 @@ public partial class MoveAndTurnTo3DActionBehaviourNode : ActionBehaviourNode {
             }
 
             if (checkForLedges) {
-                if (ledgeCast != null) {
+                if (ledgeCast == null) {
                     GD.PrintErr($"{Name}: ledgeCast is not valid when expecting a ledge check");
                     return BehaviourStatus.Failed;
                 }
