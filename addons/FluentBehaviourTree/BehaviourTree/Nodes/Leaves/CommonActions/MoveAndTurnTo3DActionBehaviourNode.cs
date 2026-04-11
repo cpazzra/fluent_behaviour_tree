@@ -31,6 +31,25 @@ public partial class MoveAndTurnTo3DActionBehaviourNode : ActionBehaviourNode {
     [Export]
     public int minDistance;
 
+    /**
+     * Conditionally check for ledges. If disabled, ledges will not stop entity movement.
+     */
+    [ExportCategory("[Optional] - Ledge detection")]
+    [Export]
+    public bool checkForLedges;
+
+    /**
+     * Raycast that will perform the actual ledge detection. The collision layers checked are managed here.
+     */
+    [Export]
+    public RayCast3D? ledgeCast;
+
+    /**
+     * If a ledge is preventing movement, fail the node?
+     */
+    [Export]
+    public bool failIfDetected;
+
 
     public override void BuildNode(FluentBuilder<GodotBehaviourContext> builder) {
         builder.Do(Name, context => {
@@ -44,6 +63,18 @@ public partial class MoveAndTurnTo3DActionBehaviourNode : ActionBehaviourNode {
             if (GetCachedTargetNodeFromGroup(targetNodeGroup, context.blackboard) is not Node3D targetNode) {
                 GD.PrintErr($"{Name}: targetNode is not valid");
                 return BehaviourStatus.Failed;
+            }
+
+            if (checkForLedges) {
+                if (ledgeCast == null) {
+                    GD.PrintErr($"{Name}: ledgeCast is not valid when expecting a ledge check");
+                    return BehaviourStatus.Failed;
+                }
+
+                ledgeCast.ForceRaycastUpdate();
+                if (!ledgeCast.IsColliding()) {
+                    return failIfDetected ? BehaviourStatus.Failed : BehaviourStatus.Running;
+                }
             }
 
             var distanceTo = characterBodyOwner.GlobalPosition.DistanceTo(targetNode.GlobalPosition);

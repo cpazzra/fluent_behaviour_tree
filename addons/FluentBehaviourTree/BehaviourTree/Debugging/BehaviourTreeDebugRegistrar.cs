@@ -15,7 +15,8 @@ public partial class BehaviourTreeDebugRegistrar : Node {
      */
     private static BehaviourTreeDebugRegistrar _instance;
 
-    public static BehaviourTreeDebugRegistrar Instance {
+    public static BehaviourTreeDebugRegistrar Instance
+    {
         get {
             if (_instance != null) return _instance;
             _instance =
@@ -31,8 +32,7 @@ public partial class BehaviourTreeDebugRegistrar : Node {
     }
 
     public static void RegisterTree(Node owner, BehaviourTree tree) {
-        // Use both the node name and it's session instanceID
-        Instance.registeredTrees[$"{owner.Name}-{owner.GetInstanceId()}"] = tree;
+        Instance.registeredTrees[GetReadableTreeKey(owner)] = tree;
         if (CanSendMessage()) {
             var messageParams = new Array([tree.GetTreeDebuggerData()]);
             EngineDebugger.SendMessage(FluentBehaviourTreeDebugger.MESSAGE_REGISTER_TREE, messageParams);
@@ -40,8 +40,7 @@ public partial class BehaviourTreeDebugRegistrar : Node {
     }
 
     public static void UpdateTree(Node owner, BehaviourTree tree) {
-        // Use both the node name and it's session instanceID
-        Instance.registeredTrees[$"{owner.Name}-{owner.GetInstanceId()}"] = tree;
+        Instance.registeredTrees[GetReadableTreeKey(owner)] = tree;
         if (CanSendMessage()) {
             var messageParams = new Array([tree.GetTreeDebuggerData()]);
             EngineDebugger.SendMessage(FluentBehaviourTreeDebugger.MESSAGE_UPDATE_TREE, messageParams);
@@ -49,8 +48,7 @@ public partial class BehaviourTreeDebugRegistrar : Node {
     }
 
     public static void UnregisterTree(Node owner, BehaviourTree tree) {
-        // Use both the node name and it's session instanceID
-        Instance.registeredTrees.Remove($"{owner.Name}-{owner.GetInstanceId()}");
+        Instance.registeredTrees.Remove(GetReadableTreeKey(owner));
         if (CanSendMessage()) {
             var messageParams = new Array([tree.GetTreeDebuggerData()]);
             EngineDebugger.SendMessage(FluentBehaviourTreeDebugger.MESSAGE_UNREGISTER_TREE, messageParams);
@@ -63,6 +61,11 @@ public partial class BehaviourTreeDebugRegistrar : Node {
             list.Add(behaviourTree);
         }
         return list;
+    }
+
+    public static string GetReadableTreeKey(Node node) {
+        // Use both the node name and it's session instanceID
+        return $"{node.Name}-{node.GetInstanceId()}";
     }
 
     public static bool CanSendMessage() {

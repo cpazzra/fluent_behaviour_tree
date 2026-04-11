@@ -17,7 +17,7 @@ public partial class BlackboardValueCheckBehaviourNode : ConditionBehaviourNode 
                 GD.PrintErr($"Missing blackboard property {blackboardPropertyName}");
                 return false;
             }
-            return expectedValue.Equals(value);
+            return expectedValue.Obj != null && expectedValue.Obj.Equals(value.Obj);
         });
     }
 }
