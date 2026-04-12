@@ -28,18 +28,11 @@ public partial class BehaviourTree : Node {
     public required Node3D treeOwner;
 
     /**
-     * A hard coded blackboard value that determines if a behaviour tree can be interrupted via <see cref="Interrupt"/>
-     */
-    public static readonly string BB_PROP_CAN_INTERUPT = "CAN_INTERRUPT";
-
-    /**
-     * Properties bound to the behaviour tree. Includes defaults.
+     * Properties bound to the behaviour tree
      */
     [Export]
-    public Godot.Collections.Dictionary<string, Variant> blackboard = new() {
-        // Default interrupts to true. Allows leaves to conditionally enable/disable interrupts 
-        [BB_PROP_CAN_INTERUPT] = true
-    };
+    public Godot.Collections.Dictionary<string, Variant> blackboard =
+        new Godot.Collections.Dictionary<string, Variant>();
 
     public IBehaviour<GodotBehaviourContext> behaviourTree { get; private set; }
 
@@ -68,10 +61,8 @@ public partial class BehaviourTree : Node {
             return;
         }
 
-        if (!IsQueuedForDeletion()) {
-            behaviourTree.Tick(new GodotBehaviourContext((float)delta, treeOwner, blackboard));
-            BehaviourTreeDebugRegistrar.UpdateTree(treeOwner, this);
-        }
+        behaviourTree.Tick(new GodotBehaviourContext((float)delta, treeOwner, blackboard));
+        BehaviourTreeDebugRegistrar.UpdateTree(treeOwner, this);
     }
 
     public override void _Notification(int what) {
@@ -109,10 +100,7 @@ public partial class BehaviourTree : Node {
      * Restart the behaviour tree from the top. Useful when, for example Player input demands the BT be recalculated from the start for hit stun/death branches.
      */
     public void Interrupt() {
-        if (blackboard[BB_PROP_CAN_INTERUPT].AsBool()) {
-            // GD.Print($"{Owner.Name} - BT Interrupted");
-            behaviourTree.Reset();
-        }
+        behaviourTree.Reset();
     }
 
     /**
