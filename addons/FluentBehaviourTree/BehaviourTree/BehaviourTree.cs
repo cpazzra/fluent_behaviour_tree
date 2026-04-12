@@ -1,4 +1,4 @@
-﻿using BehaviourTree;
+using BehaviourTree;
 using BehaviourTree.Composites;
 using BehaviourTree.Decorators;
 using BehaviourTree.FluentBuilder;
@@ -28,11 +28,18 @@ public partial class BehaviourTree : Node {
     public required Node3D treeOwner;
 
     /**
-     * Properties bound to the behaviour tree
+     * A hard coded blackboard value that determines if a behaviour tree can be interrupted via <see cref="Interrupt"/>
+     */
+    public static readonly string BB_PROP_CAN_INTERUPT = "CAN_INTERRUPT";
+
+    /**
+     * Properties bound to the behaviour tree. Includes defaults.
      */
     [Export]
-    public Godot.Collections.Dictionary<string, Variant> blackboard =
-        new Godot.Collections.Dictionary<string, Variant>();
+    public Godot.Collections.Dictionary<string, Variant> blackboard = new() {
+        // Default interrupts to true. Allows leaves to conditionally enable/disable interrupts 
+        [BB_PROP_CAN_INTERUPT] = true
+    };
 
     public IBehaviour<GodotBehaviourContext> behaviourTree { get; private set; }
 
@@ -100,7 +107,9 @@ public partial class BehaviourTree : Node {
      * Restart the behaviour tree from the top. Useful when, for example Player input demands the BT be recalculated from the start for hit stun/death branches.
      */
     public void Interrupt() {
-        behaviourTree.Reset();
+        if (blackboard[BB_PROP_CAN_INTERUPT].AsBool()) {
+            behaviourTree.Reset();
+        }
     }
 
     /**
