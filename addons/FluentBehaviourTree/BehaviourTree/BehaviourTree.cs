@@ -1,4 +1,4 @@
-﻿using BehaviourTree;
+using BehaviourTree;
 using BehaviourTree.Composites;
 using BehaviourTree.Decorators;
 using BehaviourTree.FluentBuilder;
@@ -43,6 +43,8 @@ public partial class BehaviourTree : Node {
 
     public IBehaviour<GodotBehaviourContext> behaviourTree { get; private set; }
 
+    private string debuggerId;
+
     public override void _Ready() {
         base._Ready();
         var builder = new FluentBuilder<GodotBehaviourContext>();
@@ -54,6 +56,7 @@ public partial class BehaviourTree : Node {
         // Don't "end" branch since it's the root
         AddBranch(builder, behaviourNodes, false);
         behaviourTree = builder.Build();
+        debuggerId = $"{Owner.Name}-{Owner.GetInstanceId()}";
         // Once built, register with debugger
         BehaviourTreeDebugRegistrar.RegisterTree(treeOwner, this);
     }
@@ -112,10 +115,11 @@ public partial class BehaviourTree : Node {
     /**
      * Build a variant-compatible dictionary for the debugger from the root node. Required since Godot handles
      * editor-application interactions through the networking interface via messaging, which only supports variants.
+     * <param name="debuggerMessage">Includes debugger message for potential troubleshooting of debug tab</param>
      * <seealso cref="GetNodeDebuggerData"/>
      */
-    public Dictionary GetTreeDebuggerData() {
-        return GetNodeDebuggerData(0, behaviourTree);
+    public Dictionary GetTreeDebuggerData(string debuggerMessage) {
+        return GetNodeDebuggerData(debuggerMessage, 0, behaviourTree);
     }
 
     /**
@@ -143,14 +147,18 @@ public partial class BehaviourTree : Node {
      *      }
      *  }
      * </code>
+     * <param name="debuggerMessage">Includes debugger message for potential troubleshooting of debug tab</param>
+     * <param name="depth"></param>
+     * <param name="behaviourNode"></param>
      */
-    private Dictionary GetNodeDebuggerData(int depth, IBehaviour<GodotBehaviourContext> behaviourNode) {
-        Dictionary nodeDebugMapping = new Dictionary {
-            ["depth"] = depth,
-            ["name"] = depth == 0 ? $"{Owner.Name}-{Owner.GetInstanceId()}"
-                : behaviourNode.Name,
-            ["status"] = (int)behaviourNode.Status,
-        };
+    private Dictionary GetNodeDebuggerData(string debuggerMessage,
+        int depth,
+        IBehaviour<GodotBehaviourContext> behaviourNode) {
+        var nodeDebugMapping = new Dictionary();
+        nodeDebugMapping["depth"] = depth;
+        nodeDebugMapping["name"] = depth == 0 ? debuggerId : behaviourNode.Name;
+        nodeDebugMapping["status"] = (int)behaviourNode.Status;
+
 
         // Only the root will have the blackboard 
         if (depth == 0) {
@@ -159,16 +167,21 @@ public partial class BehaviourTree : Node {
 
         var childDepth = depth + 1;
 
-        Array<Dictionary> children = new Array<Dictionary>();
-        if (behaviourNode is CompositeBehaviour<GodotBehaviourContext> compositeBehaviour) {
-            foreach (var child in compositeBehaviour.Children) {
-                children.Add(GetNodeDebuggerData(childDepth, child));
+        var children = new Array<Dictionary>();
+
+        switch (behaviourNode) {
+            case CompositeBehaviour<GodotBehaviourContext> compositeBehaviour:
+            {
+                foreach (var child in compositeBehaviour.Children) {
+                    children.Add(GetNodeDebuggerData(debuggerMessage, childDepth, child));
+                }
+                break;
             }
+            case DecoratorBehaviour<GodotBehaviourContext> decoratorBehaviour:
+                children.Add(GetNodeDebuggerData(debuggerMessage, depth, behaviourNode));
+                break;
         }
 
-        if (behaviourNode is DecoratorBehaviour<GodotBehaviourContext> decoratorBehaviour) {
-            children.Add(GetNodeDebuggerData(childDepth, decoratorBehaviour.Child));
-        }
         nodeDebugMapping["childNodes"] = children;
 
         return nodeDebugMapping;
