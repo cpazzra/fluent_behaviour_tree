@@ -5,6 +5,7 @@ namespace fluent_behaviour_tree.addons.FluentBehaviourTree.BehaviourTree.Nodes.D
 /**
  * Decorator has N time in milliseconds for it's child nodes to complete, otherwise, fail the nodes
  */
+[Tool]
 [GlobalClass]
 public partial class TimeLimitDecoratorBehaviourNode : DecoratorBehaviourNode {
 

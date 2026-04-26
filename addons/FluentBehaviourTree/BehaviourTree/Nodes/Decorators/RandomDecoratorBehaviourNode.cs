@@ -6,6 +6,7 @@ namespace fluent_behaviour_tree.addons.FluentBehaviourTree.BehaviourTree.Nodes.D
  * Has a n% chance to execute the child nodes
  */
 [Icon("res://addons/FluentBehaviourTree/BehaviourTree/Nodes/icons/BTCompositeRandomSelector.svg")]
+[Tool]
 [GlobalClass]
 public partial class RandomDecoratorBehaviourNode : DecoratorBehaviourNode {
 

@@ -6,6 +6,7 @@ namespace fluent_behaviour_tree.addons.FluentBehaviourTree.BehaviourTree.Nodes.D
  * Repeat until child nodes succeeds
  */
 [Icon("res://addons/FluentBehaviourTree/BehaviourTree/Nodes/icons/BTDecoratorFail.svg")]
+[Tool]
 [GlobalClass]
 public partial class UntilFailureDecoratorBehaviourNode : DecoratorBehaviourNode {
 

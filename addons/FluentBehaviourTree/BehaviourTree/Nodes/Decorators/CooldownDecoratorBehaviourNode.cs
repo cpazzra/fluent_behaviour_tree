@@ -5,6 +5,7 @@ namespace fluent_behaviour_tree.addons.FluentBehaviourTree.BehaviourTree.Nodes.D
 /**
  * After node is composite or leaf is successful, wait N milliseconds before trying again
  */
+[Tool]
 [GlobalClass]
 public partial class CooldownDecoratorBehaviourNode : DecoratorBehaviourNode {
 
@@ -12,6 +13,6 @@ public partial class CooldownDecoratorBehaviourNode : DecoratorBehaviourNode {
     public int cooldownTimeInMilliseconds;
 
     public override void BuildNode(FluentBuilder<GodotBehaviourContext> builder) {
-        builder.Cooldown(Name,  cooldownTimeInMilliseconds);
+        builder.Cooldown(Name, cooldownTimeInMilliseconds);
     }
 }
