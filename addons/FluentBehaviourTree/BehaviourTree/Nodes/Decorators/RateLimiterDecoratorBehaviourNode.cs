@@ -6,6 +6,7 @@ namespace fluent_behaviour_tree.addons.FluentBehaviourTree.BehaviourTree.Nodes.D
  * Cache the output of a completed call for N milliseconds. Where the cache is dirties and the composite or leaf will be called again
  */
 [Icon("res://addons/FluentBehaviourTree/BehaviourTree/Nodes/icons/BTDecoratorLimiter.svg")]
+[Tool]
 [GlobalClass]
 public partial class RateLimiterDecoratorBehaviourNode : DecoratorBehaviourNode {
 

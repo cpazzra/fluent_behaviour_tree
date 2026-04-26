@@ -10,11 +10,11 @@ namespace fluent_behaviour_tree.addons.FluentBehaviourTree.BehaviourTree.Nodes.D
  *  FAILED -> SUCCESS
  */
 [Icon("res://addons/FluentBehaviourTree/BehaviourTree/Nodes/icons/BTDecoratorNot.svg")]
+[Tool]
 [GlobalClass]
 public partial class InverterDecoratorBehaviourNode : DecoratorBehaviourNode {
 
-    public override void
-        BuildNode(FluentBuilder<GodotBehaviourContext> builder) {
+    public override void BuildNode(FluentBuilder<GodotBehaviourContext> builder) {
         builder.Invert(Name);
     }
 }

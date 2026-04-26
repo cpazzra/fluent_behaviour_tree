@@ -178,8 +178,10 @@ public partial class BehaviourTree : Node {
                 break;
             }
             case DecoratorBehaviour<GodotBehaviourContext> decoratorBehaviour:
-                children.Add(GetNodeDebuggerData(debuggerMessage, depth, behaviourNode));
+            {
+                children.Add(GetNodeDebuggerData(debuggerMessage, childDepth, decoratorBehaviour.Child));
                 break;
+            }
         }
 
         nodeDebugMapping["childNodes"] = children;
