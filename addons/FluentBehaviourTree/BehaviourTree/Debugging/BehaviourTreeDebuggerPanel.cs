@@ -140,9 +140,10 @@ public partial class BehaviourTreeDebuggerPanel : PanelContainer {
 
     internal void TreeUnregistered(Dictionary tree) {
         // The list and the option control should have synced indices
-        var index = treeArray.IndexOf(tree);
-        treeList.RemoveItem(index);
-        treeArray.RemoveAt(index);
+        var derivedIndex = treeArray.ToList()
+            .FindIndex(dictionary => dictionary["name"].AsString() == tree["name"].AsString());
+        treeList.RemoveItem(derivedIndex);
+        treeArray.RemoveAt(derivedIndex);
     }
 
     private void InsertTree(Dictionary tree) {
