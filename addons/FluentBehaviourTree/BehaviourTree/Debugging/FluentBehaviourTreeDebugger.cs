@@ -24,7 +24,7 @@ public partial class FluentBehaviourTreeDebugger : EditorDebuggerPlugin {
         session.Started += () => debuggerPanel.Start();
         session.Stopped += () => debuggerPanel.Stop();
 
-        
+
         GD.Print("Adding debugger session tab");
 
         debuggerPanel.Name = "Behaviour Tree Live View";
@@ -49,6 +49,10 @@ public partial class FluentBehaviourTreeDebugger : EditorDebuggerPlugin {
         }
         if (message == MESSAGE_UNREGISTER_TREE) {
             var behaviourTree = data[0].AsGodotDictionary();
+            if (!debuggerPanel.CanUnregister()) {
+                GD.PushWarning("No behaviour trees registered");
+                return true;
+            }
             debuggerPanel.TreeUnregistered(behaviourTree);
             return true;
         }

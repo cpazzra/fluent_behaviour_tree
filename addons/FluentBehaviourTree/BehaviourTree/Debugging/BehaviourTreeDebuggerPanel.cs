@@ -166,6 +166,10 @@ public partial class BehaviourTreeDebuggerPanel : PanelContainer {
         UpdateBlackboardTable(behaviourTree["blackboard"].AsGodotDictionary());
     }
 
+    public bool CanUnregister() {
+        return treeArray.Count > 0;
+    }
+
     public string GetTreeName(Dictionary tree) {
         return tree.GetValueOrDefault("name", "").AsString();
     }
