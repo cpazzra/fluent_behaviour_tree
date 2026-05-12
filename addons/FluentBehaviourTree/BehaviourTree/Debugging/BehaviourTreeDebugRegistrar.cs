@@ -1,4 +1,5 @@
-﻿using Godot;
+﻿#if TOOLS
+using Godot;
 using Godot.Collections;
 using System.Linq;
 namespace fluent_behaviour_tree.addons.FluentBehaviourTree.BehaviourTree.Debugging;
@@ -76,3 +77,4 @@ public partial class BehaviourTreeDebugRegistrar : Node {
         return EngineDebugger.IsActive() && !Engine.IsEditorHint() && OS.HasFeature("editor");
     }
 }
+#endif

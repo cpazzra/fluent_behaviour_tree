@@ -58,7 +58,9 @@ public partial class BehaviourTree : Node {
         behaviourTree = builder.Build();
         debuggerId = $"{Owner.Name}-{Owner.GetInstanceId()}";
         // Once built, register with debugger
+        #if TOOLS
         BehaviourTreeDebugRegistrar.RegisterTree(treeOwner, this);
+        #endif
     }
 
     public override void _Process(double delta) {
@@ -69,12 +71,16 @@ public partial class BehaviourTree : Node {
         }
 
         behaviourTree.Tick(new GodotBehaviourContext((float)delta, treeOwner, blackboard));
+        #if TOOLS
         BehaviourTreeDebugRegistrar.UpdateTree(treeOwner, this);
+        #endif
     }
 
     public override void _Notification(int what) {
         if (what == NotificationPredelete) {
+            #if TOOLS
             BehaviourTreeDebugRegistrar.UnregisterTree(treeOwner, this);
+            #endif
         }
     }
 

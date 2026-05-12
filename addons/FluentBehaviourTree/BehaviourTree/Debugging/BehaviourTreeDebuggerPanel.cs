@@ -1,4 +1,5 @@
-﻿using Godot;
+﻿#if TOOLS
+using Godot;
 using Godot.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -176,3 +177,4 @@ public partial class BehaviourTreeDebuggerPanel : PanelContainer {
         return tree.GetValueOrDefault("name", "").AsString();
     }
 }
+#endif
