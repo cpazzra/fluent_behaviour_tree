@@ -1,4 +1,5 @@
-﻿using Godot;
+﻿#if TOOLS
+using Godot;
 using System.Collections.Generic;
 using Array = Godot.Collections.Array;
 namespace fluent_behaviour_tree.addons.FluentBehaviourTree.BehaviourTree.Debugging;
@@ -75,3 +76,4 @@ public partial class FluentBehaviourTreeDebugger : EditorDebuggerPlugin {
         return false;
     }
 }
+#endif
